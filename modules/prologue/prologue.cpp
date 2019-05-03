@@ -12,7 +12,8 @@
 #include <lib/ModuleLoader.hpp>
 
 // for ctors
-#include <modules/demo/demo.hpp>
+#include <modules/reload/reload.hpp>
+#include <modules/bootstrap/bootstrap.hpp>
 
 namespace Prologue {
 
@@ -62,6 +63,10 @@ void prologue()
 	
 	// TODO: global system
 	ModuleLoader moduleLoader;
+
+	moduleLoader.appendNewModule<Reload::Reloader>();
+	moduleLoader.appendNewModule<Bootstrap::Bootstrap>();
+
 	moduleLoader.loadModules();
 
 	DebugReport("DONE\n");

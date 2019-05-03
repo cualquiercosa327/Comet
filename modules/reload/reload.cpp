@@ -7,8 +7,11 @@
 #include <revolution/pad.h>
 #include <EGG/core/eggExpHeap.hpp>
 
+#include <lib/IModule.hpp>
+
 namespace Reload {
 #ifdef DEBUG
+
 
 void reload()
 {

@@ -31,16 +31,25 @@ u8* bootStrapLoad(System::SystemManager* pManager, char* path, EGG::Heap* heap, 
 	if (DVDOpen(path, &fInfo))
 		goto out;
 
+	// Support for US Spanish
 	if (!strcmp(path, BootStrapFilePaths[4]))
 	{
-		path = (char*)"/Boot/Strap/eu/Spanish_US.szs";
+		path = (char*)"/Boot/Strap/us/Spanish_US.szs";
+		if (DVDOpen(path, &fInfo))
+			goto out;
+	}
+	// Support for US French
+	if (!strcmp(path, BootStrapFilePaths[3]))
+	{
+		path = (char*)"/Boot/Strap/us/French.szs";
 		if (DVDOpen(path, &fInfo))
 			goto out;
 	}
 
+	path = (char*)BootStrapFilePaths[1]; // Default to EU English
 	if (!DVDOpen(path, &fInfo))
 	{
-		path = (char*)BootStrapFilePaths[1]; // Default to English
+		path = (char*)"/Boot/Strap/us/English.szs"; // US english
 		if (!DVDOpen(path, &fInfo))
 		{
 			path = (char*)BootStrapFilePaths[0]; // Japan
@@ -54,6 +63,7 @@ u8* bootStrapLoad(System::SystemManager* pManager, char* path, EGG::Heap* heap, 
 			}
 		}
 	}
+	
 	
 out:
 	DVDClose(&fInfo);

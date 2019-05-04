@@ -23,7 +23,7 @@ void ModuleLoader::loadModules()
 {
 	for (std::vector<ModuleAccessor>::iterator m = mModules.begin(); m != mModules.end(); m++)
 	{
-		PokeyDebugReport("Loading module %s (%s)...", (*m)->getModuleName(), (*m)->getModuleVersion());
+		PokeyDebugReport("Loading module %s (%s)...", (*m).mpModule->getModuleName(), (*m).mpModule->getModuleVersion());
 
 		(*m).load();
 	}
@@ -33,7 +33,7 @@ void ModuleLoader::unloadModules()
 {
 	for (std::vector<ModuleAccessor>::iterator m = mModules.begin(); m != mModules.end(); m++)
 	{
-		PokeyDebugReport("Unloading module %s (%s)...", (*m)->getModuleName(), (*m)->getModuleVersion());
+		PokeyDebugReport("Unloading module %s (%s)...", (*m).mpModule->getModuleName(), (*m).mpModule->getModuleVersion());
 
 		(*m).unload();
 	}

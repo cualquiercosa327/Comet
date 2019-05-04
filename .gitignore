@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+gecko.txt
+
+.*id.
+.*nam
+.*til
+.*bin

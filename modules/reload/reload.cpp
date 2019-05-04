@@ -8,6 +8,8 @@
 #include <EGG/core/eggExpHeap.hpp>
 
 #include <lib/IModule.hpp>
+#include <libpokey/mkw/environment.h>
+#include <revolution/dvd.h>
 
 namespace Reload {
 #ifdef DEBUG

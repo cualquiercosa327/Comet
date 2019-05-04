@@ -1,5 +1,6 @@
 #pragma once
 #include <Common/rk_types.h>
+#include <lib/IModule.hpp>
 
 namespace Reload {
 

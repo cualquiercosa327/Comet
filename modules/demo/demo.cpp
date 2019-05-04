@@ -2,6 +2,8 @@
 
 namespace Demo {
 
+void applyProcessBar();
+
 void prologue()
 {
 	// Disable multitasking while recording the prior interrupt state.

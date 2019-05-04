@@ -3,6 +3,7 @@
 #include <EGG/core/eggHeap.hpp>
 #include <revolution/dvd.h>
 #include <Static/System/SystemManager.hpp>
+#include <string.h>
 
 namespace Bootstrap {
 // filepaths from all regions combined
@@ -22,7 +23,7 @@ const char** getBootStrapFilePaths()
 	return BootStrapFilePaths;
 }
 
-u8* bootStrapLoad(void* pManager, char* path, EGG::Heap* heap, bool allocTop, u32* fsizeOutput)
+u8* bootStrapLoad(System::SystemManager* pManager, char* path, EGG::Heap* heap, bool allocTop, u32* fsizeOutput)
 {
 	DVDFileInfo fInfo;
 
@@ -32,17 +33,17 @@ u8* bootStrapLoad(void* pManager, char* path, EGG::Heap* heap, bool allocTop, u3
 
 	if (!strcmp(path, BootStrapFilePaths[4]))
 	{
-		path = "/Boot/Strap/eu/Spanish_US.szs";
+		path = (char*)"/Boot/Strap/eu/Spanish_US.szs";
 		if (DVDOpen(path, &fInfo))
 			goto out;
 	}
 
 	if (!DVDOpen(path, &fInfo))
 	{
-		path = BootStrapFilePaths[1]; // Default to English
+		path = (char*)BootStrapFilePaths[1]; // Default to English
 		if (!DVDOpen(path, &fInfo))
 		{
-			path = BootStrapFilePaths[0]; // Japan
+			path = (char*)BootStrapFilePaths[0]; // Japan
 			if (!DVDOpen(path, &fInfo))
 			{
 				// Fatal: file doesn't exist
@@ -56,7 +57,7 @@ u8* bootStrapLoad(void* pManager, char* path, EGG::Heap* heap, bool allocTop, u3
 	
 out:
 	DVDClose(&fInfo);
-	return pManager->ripFromDisc(path, heap, allocTop, fsizeOutput);
+	return pManager->ripFromDisc((const char*)path, heap, allocTop, fsizeOutput);
 }
 // Overwrite load to game table
 PokeyCall(0x80007500, getBootStrapFilePaths);

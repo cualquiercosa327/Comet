@@ -1,9 +1,9 @@
 #pragma once
 
-#include <lib/IModule.hpp>
-#include <vector>
+#include <lib/ModuleAccessor.hpp>
+#include <vector.h>
 #include <libpokey/debug.h>
-};
+
 
 class ModuleLoader
 {

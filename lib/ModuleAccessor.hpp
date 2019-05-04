@@ -22,7 +22,7 @@ public:
 
 	inline bool isLoaded() { return bLoaded; }
 
-private:
+public:
 	IModule* mpModule;
 	bool bLoaded;
 };

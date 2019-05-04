@@ -7,7 +7,7 @@ public:
 	{
 		RESULT_OK
 	};
-	virtual ~IModule() = 0;
+	virtual ~IModule();// = 0;
 
 	virtual eResult load() = 0;
 	virtual eResult unload() = 0;

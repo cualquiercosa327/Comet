@@ -15,6 +15,8 @@
 #include <modules/reload/reload.hpp>
 #include <modules/bootstrap/bootstrap.hpp>
 
+#include <vector.h>
+
 namespace Prologue {
 
 
@@ -25,30 +27,25 @@ void doPatch32(void* patch);
 // The first function will be the entry point.
 void prologue()
 {
-	u32 patch_block[30 * 2 + (8)];
+	std::vector<u8> patch_block;
 	DVDFileInfo fileInfo;
 	BOOL iState = OSDisableInterrupts();
 	u32 amountRead;
-	void* buf = (void*)OSRoundUp32B((u32)&patch_block);
+	void* buf = (void*)OSRoundUp32B((u32)&patch_block[0]);
 
 	// Read patches from disc
 	if (DVDOpen(PATH_PATCH_BIN, &fileInfo))
 	{
 		u32 fileLen = fileInfo.length;
-
+		patch_block.resize((fileLen - 8) / 4);
+		DebugReport("Expecting %u patches\n", patch_block.size());
 		u32 fileLen32 = OSRoundUp32B(fileLen);
 
-		if (fileLen32 > 30 * 2 * 4)
-		{
-			DebugReport("Too many patches (max 30)!\n");
-			goto fail;
-		}
-
 		amountRead = DVDRead(&fileInfo, buf, fileLen32, 0);
+		DebugReport("Read %u bytes\n", amountRead);
 		DVDClose(&fileInfo);
 		if (fileLen32 > amountRead)
 		{
-			fail:
 			DebugReport("Failed to load PATCH.bin!\n");
 		}
 		else

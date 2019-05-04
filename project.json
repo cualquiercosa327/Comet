@@ -1,10 +1,14 @@
 {
-    "modules": [ "prologue", "reload", "demo" ],
+    "modules": [ "prologue", "reload", "demo", "bootstrap" ],
     "includes": [
-        "$MKW_DECOMP_ROOT",
-        "$RVL_DECOMP_ROOT",
+        "$EABI_ROOT",
         "$MSL_ROOT",
-        "$EABI_ROOT"
+        "$MSL_CPP",
+        "$EABI_CPP",
+        "$RVL_DECOMP_ROOT",
+        "$NW4R_DECOMP_ROOT",
+        "$MKW_DECOMP_ROOT",
+        "$POKEY"
     ],
     "externals": "RMCP01.txt",
     "static": "0x809c4fa0"

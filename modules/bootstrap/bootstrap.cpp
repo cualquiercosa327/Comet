@@ -7,14 +7,14 @@
 namespace Bootstrap {
 // filepaths from all regions combined
 static const char* BootStrapFilePaths[] = {
-	"/Boot/Strap/jp/jp.szs",
-	"/Boot/Strap/eu/English.szs",
-	"/Boot/Strap/eu/German.szs",
-	"/Boot/Strap/eu/French.szs",
-	// TODO: support Spanish_US
-	"/Boot/Strap/eu/Spanish_EU.szs",
-	"/Boot/Strap/eu/Italian.szs",
-	"/Boot/Strap/eu/Dutch.szs"
+	"/Boot/Strap/jp/jp.szs", // 0
+	"/Boot/Strap/eu/English.szs", // 1
+	"/Boot/Strap/eu/German.szs", // 2
+	"/Boot/Strap/eu/French.szs", // 3
+	// "/Boot/Strap/eu/Spanish_US.szs"
+	"/Boot/Strap/eu/Spanish_EU.szs", // 4
+	"/Boot/Strap/eu/Italian.szs", // 5
+	"/Boot/Strap/eu/Dutch.szs" // 6
 };
 
 const char** getBootStrapFilePaths()
@@ -22,9 +22,21 @@ const char** getBootStrapFilePaths()
 	return BootStrapFilePaths;
 }
 
-u8* bootStrapLoad(SystemManager* pManager, char* path, EGG::Heap* heap, bool allocTop, u32* fsizeOutput)
+u8* bootStrapLoad(void* pManager, char* path, EGG::Heap* heap, bool allocTop, u32* fsizeOutput)
 {
 	DVDFileInfo fInfo;
+
+
+	if (DVDOpen(path, &fInfo))
+		goto out;
+
+	if (!strcmp(path, BootStrapFilePaths[4]))
+	{
+		path = "/Boot/Strap/eu/Spanish_US.szs";
+		if (DVDOpen(path, &fInfo))
+			goto out;
+	}
+
 	if (!DVDOpen(path, &fInfo))
 	{
 		path = BootStrapFilePaths[1]; // Default to English
@@ -41,6 +53,8 @@ u8* bootStrapLoad(SystemManager* pManager, char* path, EGG::Heap* heap, bool all
 			}
 		}
 	}
+	
+out:
 	DVDClose(&fInfo);
 	return pManager->ripFromDisc(path, heap, allocTop, fsizeOutput);
 }

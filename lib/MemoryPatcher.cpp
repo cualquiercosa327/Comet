@@ -44,7 +44,7 @@ void MemoryPatcher::processDiscPatchFile()
 		DebugReport("Expecting %u patches\n", patch_block.size());
 		u32 fileLen32 = OSRoundUp32B(fileLen);
 
-		amountRead = DVDRead(&fileInfo, buf, fileLen32, 0);
+		u32 amountRead = DVDRead(&fileInfo, buf, fileLen32, 0);
 		DebugReport("Read %u bytes\n", amountRead);
 		DVDClose(&fileInfo);
 		if (fileLen32 > amountRead)

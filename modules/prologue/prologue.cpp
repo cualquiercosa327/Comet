@@ -8,54 +8,30 @@
 #include <libpokey/debug.h>
 #include <libpokey/mkw/heaps.hpp>
 
-#include <lib/ModuleLoader.hpp>
-#include <lib/MemoryPatcher.hpp>
+#include <lib/CometSystem.hpp>
 
 // for ctors
 #include <modules/reload/reload.hpp>
 #include <modules/bootstrap/bootstrap.hpp>
 
-#include <vector.h>
 
 namespace Prologue {
 
 
-void applyPatches(u32* block);
-void doPatch32(void* patch);
-
-
-ModuleLoader* spModuleLoader;
-MemoryPatcher* spMemoryPatcher;
-
 // The first function will be the entry point.
 void prologue()
 {
-	BOOL iState = OSDisableInterrupts();
-	u32 amountRead;
+	bool iState = OSDisableInterrupts();
 
-	if (spModuleLoader)
-		delete spModuleLoader;
-	spModuleLoader = new ModuleLoader();
+	// todo: unload if already loaded
+	CometSystem::initSystem();
 
-	if (spMemoryPatcher)
-		spMemoryPatcher->revertPatches();
-	else
-		spMemoryPatcher = new MemoryPatcher();
+	CometSystem::getSystem()->processDiscPatches();
 
-	spMemoryPatcher->processDiscPatchFile();
+	CometSystem::getSystem()->mModuleLoader.appendNewModule<Reload::Reloader>();
+	CometSystem::getSystem()->mModuleLoader.appendNewModule<Bootstrap::Bootstrap>();
 
-	// call prologue functions
-	
-	// TODO: global system
-
-	spModuleLoader->appendNewModule<Reload::Reloader>();
-	spModuleLoader->appendNewModule<Bootstrap::Bootstrap>();
-
-	spModuleLoader->loadModules();
-
-	DebugReport("DONE\n");
-
-
+	CometSystem::getSystem()->mModuleLoader.loadModules();
 
 	OSRestoreInterrupts(iState);
 }

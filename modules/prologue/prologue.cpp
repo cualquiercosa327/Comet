@@ -24,6 +24,9 @@ void applyPatches(u32* block);
 void doPatch32(void* patch);
 
 
+ModuleLoader* spModuleLoader;
+
+
 // The first function will be the entry point.
 void prologue()
 {
@@ -32,6 +35,10 @@ void prologue()
 	BOOL iState = OSDisableInterrupts();
 	u32 amountRead;
 	void* buf = (void*)OSRoundUp32B((u32)&patch_block[0]);
+
+	if (spModuleLoader)
+		delete spModuleLoader;
+	spModuleLoader = new ModuleLoader();
 
 	// Read patches from disc
 	if (DVDOpen(PATH_PATCH_BIN, &fileInfo))
@@ -59,12 +66,11 @@ void prologue()
 	// call prologue functions
 	
 	// TODO: global system
-	ModuleLoader moduleLoader;
 
-	moduleLoader.appendNewModule<Reload::Reloader>();
-	moduleLoader.appendNewModule<Bootstrap::Bootstrap>();
+	spModuleLoader->appendNewModule<Reload::Reloader>();
+	spModuleLoader->appendNewModule<Bootstrap::Bootstrap>();
 
-	moduleLoader.loadModules();
+	spModuleLoader->loadModules();
 
 	DebugReport("DONE\n");
 

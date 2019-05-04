@@ -33,7 +33,7 @@
 
 gecko.txt
 
-.*id.
-.*nam
-.*til
-.*bin
+*.id*
+*.nam
+*.til
+*.bin

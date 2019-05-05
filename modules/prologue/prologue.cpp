@@ -27,8 +27,11 @@ void prologue()
 	CometSystem::getSystem()->processDiscPatches();
 
 	CometSystem::getSystem()->mModuleLoader.appendNewModule<Reload::Reloader>();
-
+	
 	CometSystem::getSystem()->mModuleLoader.loadModules();
+
+	DebugReport("Restoring interrupt state and returning!\n");
+
 
 	OSRestoreInterrupts(iState);
 }

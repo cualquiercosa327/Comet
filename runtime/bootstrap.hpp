@@ -13,7 +13,7 @@ All relevant headers have been moved here to allow the runtime loader to remain 
 
 extern "C" void OSReport(const char* str, ...);
 
-typedef unsigned int u32;
+typedef unsigned long u32;
 typedef unsigned char u8;
 #define NULL 0
 #define kmCall PokeyCall
@@ -44,6 +44,7 @@ struct Heap
 	virtual u32 resizeForMBlock(void* block, u32 size) = 0;
 	virtual u32 getAllocatableSize(int align) = 0;
 	virtual u32 adjust() = 0;
+	static void* alloc(u32 size, int align, Heap* heap);
 };
 
 struct DvdRipper {
@@ -80,6 +81,7 @@ struct DVDFileInfo
 };
 extern "C" int DVDOpen(const char* path, DVDFileInfo* fInfo);
 extern "C" void DVDClose(DVDFileInfo* fInfo);
+extern "C" int DVDReadPrio(DVDFileInfo* fInfo, void* addr, int len, int offs, int prio);
 
 
 /*

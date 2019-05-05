@@ -31,9 +31,11 @@
 *.out
 *.app
 
-gecko.txt
+*.txt
 
 *.id*
 *.nam
 *.til
 *.bin
+
+*.dol

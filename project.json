@@ -1,5 +1,5 @@
 {
-    "modules": [ "prologue", "reload", "demo", "bootstrap" ],
+    "modules": [ "prologue", "reload", "demo" ],
     "includes": [
         "$EABI_ROOT",
         "$MSL_ROOT",

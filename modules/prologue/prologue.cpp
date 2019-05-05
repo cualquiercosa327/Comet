@@ -12,8 +12,6 @@
 
 // for ctors
 #include <modules/reload/reload.hpp>
-#include <modules/bootstrap/bootstrap.hpp>
-
 
 namespace Prologue {
 
@@ -29,7 +27,6 @@ void prologue()
 	CometSystem::getSystem()->processDiscPatches();
 
 	CometSystem::getSystem()->mModuleLoader.appendNewModule<Reload::Reloader>();
-	CometSystem::getSystem()->mModuleLoader.appendNewModule<Bootstrap::Bootstrap>();
 
 	CometSystem::getSystem()->mModuleLoader.loadModules();
 

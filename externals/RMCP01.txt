@@ -11,6 +11,9 @@ __files=0x80270CF0
 fprintf=0x00000000 # hack
 abort=0x801A8858 # OSReturnToMenu
 PADRead=0x801AF44C
+
+OSSetPeriodicAlarm=0x801A08E0
+OSGetTime=0x801AAD5C
 OSFatal=0x801A4EC4
 Fatal=0x801A4EC4
 strcmp=0x8001329C
@@ -47,3 +50,10 @@ _restgpr_26=0x800215E8
 _restgpr_27=0x800215EC
 _restgpr_28=0x800215F0
 _restgpr_29=0x800215F4
+
+__div2u=0x80021604
+__div2i=0x800216F0
+__mod2u=0x80021828
+__mod2i=0x8002190C
+__shl2i=0x80021A18
+__shr2u=0x80021A3C

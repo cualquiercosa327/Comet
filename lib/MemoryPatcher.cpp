@@ -40,7 +40,7 @@ void MemoryPatcher::processDiscPatchFile()
 	if (DVDOpen(PATH_PATCH_BIN, &fileInfo))
 	{
 		u32 fileLen = fileInfo.length;
-		patch_block.resize((fileLen - 8) / 4);
+		patch_block.resize((fileLen - 8) / 8);
 		DebugReport("Expecting %u patches\n", patch_block.size());
 		u32 fileLen32 = OSRoundUp32B(fileLen);
 
@@ -71,3 +71,18 @@ void MemoryPatcher::patch(MemoryPatcher::Patch32* block)
 	icbi 0, r3;
 	isync;
 } }
+
+void MemoryPatcher::scanForChanges()
+{
+	DebugReport("Watcher: Periodic scan!\n");
+	for (std::vector<PatchRecord>::iterator it = mPatchRecord.begin(); it != mPatchRecord.end(); it++)
+	{
+		if (*(u32*)(*it).address != (*it).newVal)
+		{
+			if ((u32)(*it).address == (*it).oldVal)
+				DebugReport("Watcher: Revert 32: %p was 0x%08x patched to 0x%08x\n", (*it).address, (*it).oldVal, (*it).newVal);
+			else
+				DebugReport("Watcher: %p was overwriten (was %p, patched to %p, now %p)\n", (*it).address, (*it).oldVal, (*it).newVal, *(u32*)(*it).address);
+		}
+	}
+}

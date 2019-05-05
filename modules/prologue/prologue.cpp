@@ -30,6 +30,8 @@ void prologue()
 	
 	CometSystem::getSystem()->mModuleLoader.loadModules();
 
+	CometSystem::getSystem()->setupMemoryWatcher();
+
 	DebugReport("Restoring interrupt state and returning!\n");
 
 

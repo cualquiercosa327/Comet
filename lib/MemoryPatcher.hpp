@@ -20,6 +20,7 @@ public:
 	void processDiscPatchFile();
 	static void patch(Patch32* patch);
 
+	void scanForChanges();
 
 
 private:

@@ -31,6 +31,7 @@ void ModuleAccessor::load()
 
 void ModuleAccessor::unload()
 {
+	PokeyDebugReport("UNLOAD\n");
 	if (!bLoaded)
 	{
 		PokeyDebugReport("Module not loaded..skipping!\n");

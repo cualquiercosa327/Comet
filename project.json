@@ -1,5 +1,5 @@
 {
-    "modules": [ "prologue", "reload", "demo" ],
+    "modules": [ "prologue", "reload", "demo", "log", "lightCycler" ],
     "includes": [
         "$EABI_ROOT",
         "$MSL_ROOT",

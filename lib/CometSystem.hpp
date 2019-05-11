@@ -5,7 +5,7 @@
 
 
 // Check memory patches every five minutes
-#define MEMORY_WATCHER_PERIOD 60 * 5
+#define MEMORY_WATCHER_PERIOD 60 * 5 * 17 * 20
 
 class CometSystem
 {
@@ -19,6 +19,8 @@ public:
 
 	void processDiscPatches();
 	void setupMemoryWatcher();
+
+	void tick();
 
 private:
 	static CometSystem* spInstance;

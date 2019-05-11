@@ -15,6 +15,9 @@ public:
 	void unloadModules();
 	void reloadModules();
 
+	// Dispatch module frame hooks
+	void tick();
+
 	template<class M>
 	void appendNewModule()
 	{

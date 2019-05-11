@@ -1,0 +1,4 @@
+{
+    "includes": [ ],
+    "sources": [ "log.cpp" ]
+}

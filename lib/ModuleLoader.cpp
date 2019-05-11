@@ -31,8 +31,11 @@ void ModuleLoader::loadModules()
 
 void ModuleLoader::unloadModules()
 {
+	int i = 0;
+	PokeyDebugReport("unloading modules..\n");
 	for (std::vector<ModuleAccessor>::iterator m = mModules.begin(); m != mModules.end(); m++)
 	{
+		DebugReport("it: %u\n", i++);
 		PokeyDebugReport("Unloading module %s (%s)...", (*m).mpModule->getModuleName(), (*m).mpModule->getModuleVersion());
 
 		(*m).unload();
@@ -44,4 +47,13 @@ void ModuleLoader::reloadModules()
 	PokeyDebugReport("Reloading modules!\n");
 	unloadModules();
 	loadModules();
+}
+
+void ModuleLoader::tick()
+{
+	DebugReport("Tick!\n");
+	for (std::vector<ModuleAccessor>::iterator m = mModules.begin(); m != mModules.end(); m++)
+	{
+		((*m).mpModule)->onFrame();
+	}
 }

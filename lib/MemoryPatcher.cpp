@@ -26,8 +26,8 @@ void MemoryPatcher::revertPatches()
 {
 	for (std::vector<PatchRecord>::iterator it = mPatchRecord.begin(); it != mPatchRecord.end(); it++)
 	{
-		DebugReport("Revert 32: %p was 0x%08x patched to 0x%08x\n", (*it).address, (*it).oldVal, (*it).newVal);
-		patch((Patch32*)&(*it).address);
+		DebugReport("REVERTPATCHES: Revert 32: %p was 0x%08x patched to 0x%08x\n", (*it).addr, (*it).val, (*it).newVal);
+		patch((Patch32*)&(*it).addr);
 	}
 	mPatchRecord.clear();
 }
@@ -35,6 +35,9 @@ void MemoryPatcher::processDiscPatchFile()
 {
 	std::vector<u8> patch_block;
 	DVDFileInfo fileInfo;
+
+	DebugReport("\033[31;1;4mHello\033[0m\n");
+
 	void* buf = (void*)OSRoundUp32B((u32)&patch_block[0]);
 	// Read patches from disc
 	if (DVDOpen(PATH_PATCH_BIN, &fileInfo))
@@ -53,6 +56,8 @@ void MemoryPatcher::processDiscPatchFile()
 		}
 		else
 		{
+			
+			DebugReport("Applying patch file..\n");
 			// NULL terminated
 			processPatchFile((u32*)buf);
 			DebugReport("Success!\n");
@@ -77,12 +82,12 @@ void MemoryPatcher::scanForChanges()
 	DebugReport("Watcher: Periodic scan!\n");
 	for (std::vector<PatchRecord>::iterator it = mPatchRecord.begin(); it != mPatchRecord.end(); it++)
 	{
-		if (*(u32*)(*it).address != (*it).newVal)
+		if (*(u32*)(*it).addr != (*it).newVal)
 		{
-			if ((u32)(*it).address == (*it).oldVal)
-				DebugReport("Watcher: Revert 32: %p was 0x%08x patched to 0x%08x\n", (*it).address, (*it).oldVal, (*it).newVal);
+			if ((u32)(*it).addr == (*it).val)
+				DebugReport("Watcher: Revert 32: %p was 0x%08x patched to 0x%08x\n", (*it).addr, (*it).val, (*it).newVal);
 			else
-				DebugReport("Watcher: %p was overwriten (was %p, patched to %p, now %p)\n", (*it).address, (*it).oldVal, (*it).newVal, *(u32*)(*it).address);
+				DebugReport("Watcher: %p was overwriten (was %p, patched to %p, now %p)\n", (*it).addr, (*it).val, (*it).newVal, *(u32*)(*it).addr);
 		}
 	}
 }

@@ -6,11 +6,19 @@
 class MemoryPatcher
 {
 public:
-	struct Patch32
+	template <typename T>
+	struct Patch
 	{
 		void* addr;
-		u32 val;
+		T     val;
+
+		inline Patch()
+		{}
+		inline Patch(void* dst, T src)
+			: addr(dst), val(src)
+		{}
 	};
+	typedef Patch<u32> Patch32;
 
 	MemoryPatcher();
 	~MemoryPatcher();
@@ -25,16 +33,13 @@ public:
 
 private:
 
-	struct PatchRecord
+	struct PatchRecord : public Patch32
 	{
-		// important that it starts same as Patch32
-		void* address;
-		u32 oldVal;
 		u32 newVal;
 
-		inline PatchRecord() {}
+		inline PatchRecord() : Patch() {}
 		inline PatchRecord(void* addr, u32 o, u32 n)
-			: address(addr), oldVal(o), newVal(n)
+			: Patch32(addr, o), newVal(n)
 		{}
 	};
 

@@ -12,7 +12,7 @@ CometSystem* CometSystem::initSystem()
 {
 	if (spInstance)
 	{
-		DebugReport("Already initialized!");
+		DebugReport("Already initialized!\n");
 		return spInstance;
 	}
 	DebugReport("Initializing Comet System!\n");
@@ -37,6 +37,12 @@ static void AlarmHandler(OSAlarm* alarm, OSContext* ctx)
 void CometSystem::setupMemoryWatcher()
 {
 	DebugReport("Initializing memory watcher with period of %ds.\n", MEMORY_WATCHER_PERIOD);
-	
+#if 0
 	OSSetPeriodicAlarm(&mMemoryWatcherAlarm, OSGetTime(), OSSecondsToTicks(MEMORY_WATCHER_PERIOD), AlarmHandler);
+#endif
+}
+
+void CometSystem::tick()
+{
+	mModuleLoader.tick();
 }

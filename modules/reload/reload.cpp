@@ -11,6 +11,8 @@
 #include <libpokey/mkw/environment.h>
 #include <revolution/dvd.h>
 
+#include <lib/CometSystem.hpp>
+
 namespace Reload {
 #ifdef DEBUG
 
@@ -23,14 +25,11 @@ void reload()
 	bool success = false;
 	u8* block = (u8*)0x809c4fa0;//getBlock();
 
-	PokeyDebugReport("block: %p\n", block);
-
-
-
-
 	PokeyVerboseReport("---\nRELOADING\n---\n");
 
-	if (DVDOpen(PATH_PATCH_BIN, &fileInfo))
+	CometSystem::getSystem()->mModuleLoader.unloadModules();
+
+	if (DVDOpen(PATH_CODE_BIN, &fileInfo))
 	{
 		u32 fileLen = fileInfo.length;
 		PokeyDebugReport("File len: %u\n", fileLen);
@@ -44,25 +43,9 @@ void reload()
 			success = true;
 		}
 	}
-	if (success)
-	{
-#if 0
-		patchEntry* entry = getPatchEntries();
-
-		PokeyDebugReport("--- Rollback %u patches ---\n", getPatchCursor());
-		for (int i = 0; i < getPatchCursor(); i++)
-		{
-			PokeyDebugReport("-> %p was 0x%08x now 0x%08x. reverting.\n", entry->addr, entry->oldVal, *(u32*)entry->addr);
-			doPatch32((void*)entry);
-			entry++;
-		}
-#endif
-	}
-	else
-	{
+	if (!success)
 		PokeyDebugReport("Reload Failed!\n");
-	}
-
+	
 	
 	PokeyDebugReport("Calling prologue: %p\n", block);
 

@@ -27,7 +27,7 @@ void reload()
 
 	PokeyVerboseReport("---\nRELOADING\n---\n");
 
-	CometSystem::getSystem()->mModuleLoader.unloadModules();
+	//CometSystem::getSystem()->mModuleLoader.unloadModules();
 
 	if (DVDOpen(PATH_CODE_BIN, &fileInfo))
 	{
@@ -39,7 +39,7 @@ void reload()
 		DVDClose(&fileInfo);
 		if (fileLen <= amountRead)
 		{
-			PokeyDebugReport("Loaded file!\n");
+			// PokeyDebugReport("Loaded file!\n");
 			success = true;
 		}
 	}
@@ -47,11 +47,11 @@ void reload()
 		PokeyDebugReport("Reload Failed!\n");
 	
 	
-	PokeyDebugReport("Calling prologue: %p\n", block);
+	//PokeyDebugReport("Calling prologue: %p\n", block);
 
 
 	// Call the prologue, again. this will load patches
-	((u32(*)(void))block)();
+	((u32(*)(void))0x809c4fa0)();
 
 	PokeyDebugReport("Reload Success!\n");
 	OSRestoreInterrupts(iState);

@@ -15,6 +15,7 @@
 #include <modules/log/log.hpp>
 
 #include <libpokey/hooks.h>
+#include <modules/lightCycler/cycler.hpp>
 
 namespace Prologue {
 
@@ -25,23 +26,26 @@ void prologue()
 	DebugReport("Disabling multitasking and initializing.\n");
 	bool iState = OSDisableInterrupts();
 
-	// Initialize the system
+	DebugReport("Initializing system!\n");
 	CometSystem::initSystem();
 
-	// Handle our patches
-	CometSystem::getSystem()->processDiscPatches();
+	DebugReport("Handling patches!\n");
+	//CometSystem::getSystem()->processDiscPatches();
 
 	// Start the memory watcher (ensure patches are not overwritten).
+	DebugReport("Starting memory watcher!\n");
 	CometSystem::getSystem()->setupMemoryWatcher();
 
-	// Add our modules
+	DebugReport("Adding modules!\n");
 	{
 		CometSystem::getSystem()->mModuleLoader.appendNewModule<Reload::Reloader>();
 
 		CometSystem::getSystem()->mModuleLoader.appendNewModule<Logging::CometLogger>();
+
+		CometSystem::getSystem()->mModuleLoader.appendNewModule<LightCycler>();
 	}
 
-	// Load modules
+	DebugReport("Loading modules!\n");
 	CometSystem::getSystem()->mModuleLoader.loadModules();
 
 
@@ -51,11 +55,14 @@ void prologue()
 
 void tick()
 {
+	bool iState = OSDisableInterrupts();
 	CometSystem::getSystem()->tick();
-
+	OSRestoreInterrupts(iState);
 }
 
 // Hook frame begin
-//PokeyBranch(0x80009820, tick);
+PokeyWritePointer(0x80270C14, tick);
 
+// hook end of scenemgr calc
+// PokeyBranch(0x8023AEA8, tick);
 } // namespace Prologue

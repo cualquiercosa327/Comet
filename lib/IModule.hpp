@@ -12,7 +12,7 @@ public:
 	virtual eResult load() = 0;
 	virtual eResult unload() = 0;
 
-	virtual void onFrame() {}
+	virtual void onFrame();
 
 	virtual const char* getModuleName() = 0;
 	virtual const char* getModuleVersion() = 0;

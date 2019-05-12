@@ -57,3 +57,11 @@ __mod2u=0x80021828
 __mod2i=0x8002190C
 __shl2i=0x80021A18
 __shr2u=0x80021A3C
+
+
+GetResMat__Q34nw4r3g3d6ResMdlCFUl=0x8004E9F0
+GetResMatNumEntries__Q34nw4r3g3d6ResMdlCFv=0x8004EA50
+Panic__Q24nw4r2dbFPCciPCc=0x80025FB0
+Panic__Q24nw4r2dbFPCciPCce=0x80025FB0
+GetResMdl__Q34nw4r3g3d7ResFileCFPCc=0x8004C240
+__register_global_object=0x80021338

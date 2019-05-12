@@ -5,24 +5,18 @@
 
 #include <libpokey/debug.h>
 
-
+void LightCyclerTick();
 class LightCycler : public IModule
 {
 public:
 	~LightCycler() override {}
-	eResult load() override
-	{
-		return RESULT_OK;
-	}
+	eResult load() override;
 	eResult unload() override
 	{
 		return RESULT_OK;
 	}
 
-	void tick() override
-	{
-		DebugReport("CYCL\n");
-	}
+	void onFrame() override;
 
 	const char* getModuleName() override { return "Comet Light Cycler"; }
 	const char* getModuleVersion() override { return "1.0"; }

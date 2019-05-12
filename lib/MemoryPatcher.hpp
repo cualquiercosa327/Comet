@@ -1,7 +1,7 @@
 #pragma once
 
 #include <libpokey/debug.h>
-#include <vector.h>
+#include <vector>
 
 class MemoryPatcher
 {

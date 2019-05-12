@@ -4,7 +4,9 @@
 #include <libpokey/hooks.h>
 #include <libpokey/mkw/environment.h>
 
+// #define MARGIN_OF_ERROR 2048
 
+#define MARGIN_OF_ERROR 0
 
 inline
 EGG::Heap* getMem1Heap()
@@ -41,20 +43,24 @@ kmCallDefCpp(0x80007B5C, bool, System::ModuleLinker* linker, int moduleID)
 	fileLenRounded = (((u32*)&fileInfo)[13] + 31) & ~31;
 	DebugReport("Expecting %u bytes...\n", fileLenRounded);
 	
-	block = EGG::Heap::alloc(fileLenRounded + 2048, 32, pHeap);
+	block = EGG::Heap::alloc(fileLenRounded + MARGIN_OF_ERROR, 32, pHeap);
 
 	if ((u32)block != 0x809c4fa0)
 	{
 		DebugReport("Block allocated at unexpected location (%p)!\n", block);
 
+#if MARGIN_OF_ERROR > 0
+
 		u32 dif = 0x809c4fa0 - (u32)block;
 
-		if (dif <= 2048)
+		if (dif <= MARGIN_OF_ERROR)
 		{
-			DebugReport("Off by %u.. within 2048 room for error\n", dif);
+			DebugReport("Off by %u.. margin of error\n", dif);
 			block = (void*)0x809c4fa0;
 			goto call;
 		}
+
+#endif
 
 		pHeap->free(block);
 		goto out;

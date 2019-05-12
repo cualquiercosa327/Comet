@@ -9,6 +9,7 @@ MemoryPatcher::~MemoryPatcher()
 {}
 void MemoryPatcher::processPatchFile(u32* block)
 {
+#if 0
 	int i;
 	for (i = 0; block[i]; i += 2)
 	{
@@ -21,48 +22,63 @@ void MemoryPatcher::processPatchFile(u32* block)
 		patch((Patch32*)&block[i]);
 	}
 	DebugReport("Made %u patches!\n", i / 2);
+#endif
+	int i = 0;
+	for (Patch32* pPatch = (Patch32*)block;
+		pPatch->addr;
+		++pPatch, ++i)
+	{
+		patch(pPatch);
+	}
+	DebugReport("Made %u patches!\n", i);
+
 }
 void MemoryPatcher::revertPatches()
 {
-	for (std::vector<PatchRecord>::iterator it = mPatchRecord.begin(); it != mPatchRecord.end(); it++)
+	for (PatchRecord* it = &mPatchRecord[0]; it != &mPatchRecord[mPatchRecord.size() - 1]; it++)
 	{
 		DebugReport("REVERTPATCHES: Revert 32: %p was 0x%08x patched to 0x%08x\n", (*it).addr, (*it).val, (*it).newVal);
 		patch((Patch32*)&(*it).addr);
 	}
 	mPatchRecord.clear();
 }
+
+void funcReqFail(const char* exp, const char* msg)
+{
+	DebugReport("Function fail: %s (%s)\n", msg, exp);
+}
+
+#define FUNC_REQUIRES(exp, msg) do { \
+	if( ! (exp) ) { funcReqFail(#exp, msg); return; } \
+} while (0);
 void MemoryPatcher::processDiscPatchFile()
 {
 	std::vector<u8> patch_block;
 	DVDFileInfo fileInfo;
+	
+	FUNC_REQUIRES(DVDOpen(PATH_PATCH_BIN, &fileInfo), "Failed to open patch file!\n");
+	
+	
+	u32 fileLen = fileInfo.length;
+	u32 fileLen32 = OSRoundUp32B(fileLen);
 
-	DebugReport("\033[31;1;4mHello\033[0m\n");
 
-	void* buf = (void*)OSRoundUp32B((u32)&patch_block[0]);
-	// Read patches from disc
-	if (DVDOpen(PATH_PATCH_BIN, &fileInfo))
-	{
-		u32 fileLen = fileInfo.length;
-		patch_block.resize((fileLen - 8) / 8);
-		DebugReport("Expecting %u patches\n", patch_block.size());
-		u32 fileLen32 = OSRoundUp32B(fileLen);
+	patch_block.resize(fileLen32 + 32);
 
-		u32 amountRead = DVDRead(&fileInfo, buf, fileLen32, 0);
-		DebugReport("Read %u bytes\n", amountRead);
-		DVDClose(&fileInfo);
-		if (fileLen32 > amountRead)
-		{
-			DebugReport("Failed to load PATCH.bin!\n");
-		}
-		else
-		{
+
+	DebugReport("Expecting %u patches\n", fileLen32);
+
+	u32 amountRead = DVDRead(&fileInfo, (void*)OSRoundUp32B(&patch_block[0]), fileLen32, 0);
+	DebugReport("Read %u bytes\n", amountRead);
+	DVDClose(&fileInfo);
+	
+	FUNC_REQUIRES(fileLen32 <= amountRead, "Did not read enough bytes")
 			
-			DebugReport("Applying patch file..\n");
-			// NULL terminated
-			processPatchFile((u32*)buf);
-			DebugReport("Success!\n");
-		}
-	}
+	DebugReport("Applying patch file..\n");
+
+	// NULL terminated
+	processPatchFile((u32*)OSRoundUp32B((u32)&patch_block[0]));
+	DebugReport("Success!\n");
 }
 void MemoryPatcher::patch(MemoryPatcher::Patch32* block)
 { __asm {

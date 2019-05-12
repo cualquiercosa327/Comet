@@ -4,43 +4,38 @@
 
 
 MemoryPatcher::MemoryPatcher()
-{}
+{
+	numPatches = 0;
+}
 MemoryPatcher::~MemoryPatcher()
 {}
 void MemoryPatcher::processPatchFile(u32* block)
 {
-#if 0
-	int i;
-	for (i = 0; block[i]; i += 2)
-	{
-		u32* dst = (u32*)block[i];
-		u32  val = block[i + 1];
-
-		mPatchRecord.push_back(PatchRecord(dst, *dst, val));
-
-		DebugReport("Patching 32: %p = 0x%08x\n", dst, val);
-		patch((Patch32*)&block[i]);
-	}
-	DebugReport("Made %u patches!\n", i / 2);
-#endif
 	int i = 0;
 	for (Patch32* pPatch = (Patch32*)block;
 		pPatch->addr;
 		++pPatch, ++i)
 	{
+		DebugAssert(numPatches < NUM_PATCH_HISTORY);
+
+		mPatchRecord[numPatches].addr = pPatch->addr;
+		mPatchRecord[numPatches].val = *(u32*)pPatch->addr;
+		mPatchRecord[numPatches].newVal = pPatch->val;
 		patch(pPatch);
+		numPatches++;
+
 	}
 	DebugReport("Made %u patches!\n", i);
-
 }
 void MemoryPatcher::revertPatches()
 {
-	for (PatchRecord* it = &mPatchRecord[0]; it != &mPatchRecord[mPatchRecord.size() - 1]; it++)
+	for (PatchRecord* it = &mPatchRecord[0]; numPatches, it != &mPatchRecord[numPatches]; it++)
 	{
-		DebugReport("REVERTPATCHES: Revert 32: %p was 0x%08x patched to 0x%08x\n", (*it).addr, (*it).val, (*it).newVal);
-		patch((Patch32*)&(*it).addr);
+		DebugReport("REVERTPATCHES: Revert 32: %p was 0x%08x patched to 0x%08x\n", it->addr, it->val, it->newVal);
+		patch((Patch32*)&it->addr);
 	}
-	mPatchRecord.clear();
+	// Setting num to 0 effectively clearing
+	numPatches = 0;
 }
 
 void funcReqFail(const char* exp, const char* msg)
@@ -61,10 +56,6 @@ void MemoryPatcher::processDiscPatchFile()
 	
 	u32 fileLen = fileInfo.length;
 	u32 fileLen32 = OSRoundUp32B(fileLen);
-
-
-	patch_block.resize(fileLen32 + 32);
-
 
 	DebugReport("Expecting %u patches\n", fileLen32);
 
@@ -96,14 +87,15 @@ void MemoryPatcher::patch(MemoryPatcher::Patch32* block)
 void MemoryPatcher::scanForChanges()
 {
 	DebugReport("Watcher: Periodic scan!\n");
-	for (std::vector<PatchRecord>::iterator it = mPatchRecord.begin(); it != mPatchRecord.end(); it++)
+
+	for (PatchRecord* it = &mPatchRecord[0]; numPatches, it != &mPatchRecord[numPatches]; it++)
 	{
-		if (*(u32*)(*it).addr != (*it).newVal)
+		if (*(u32*)it->addr != it->newVal)
 		{
-			if ((u32)(*it).addr == (*it).val)
-				DebugReport("Watcher: Revert 32: %p was 0x%08x patched to 0x%08x\n", (*it).addr, (*it).val, (*it).newVal);
+			if ((u32)it->addr == it->val)
+				DebugReport("Watcher: Revert 32: %p was 0x%08x patched to 0x%08x\n", it->addr, it->val, it->newVal);
 			else
-				DebugReport("Watcher: %p was overwriten (was %p, patched to %p, now %p)\n", (*it).addr, (*it).val, (*it).newVal, *(u32*)(*it).addr);
+				DebugReport("Watcher: %p was overwriten (was %p, patched to %p, now %p)\n", it->addr, it->val, it->newVal, *(u32*)it->addr);
 		}
 	}
 }

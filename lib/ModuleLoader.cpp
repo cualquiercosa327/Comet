@@ -6,6 +6,8 @@
 ModuleLoader::ModuleLoader()
 {
 	PokeyVerboseReport("[ModuleLoader @%p] Constructed\n", this);
+	mNum = 0;
+	mCursor = 0;
 }
 ModuleLoader::~ModuleLoader()
 {
@@ -15,19 +17,23 @@ ModuleLoader::~ModuleLoader()
 	unloadModules();
 
 	// ensure modules are cleaned up
-	for (int i = 0; i < mModules.size(); i++)
+	for (int i = 0; i < mNum; i++)
 	{
-		delete &mModules[i];
+		delete mModules[i].mpModule;
 	}
 }
 
 void ModuleLoader::loadModules()
 {
-	for (std::vector<ModuleAccessor>::iterator m = mModules.begin(); m != mModules.end(); m++)
+	PokeyDebugReport("Loading %u modules\n", mNum);
+	for (int i = 0; i < mNum; i++)
 	{
-		PokeyDebugReport("Loading module %s (%s)...", (*m).mpModule->getModuleName(), (*m).mpModule->getModuleVersion());
+		PokeyDebugReport("module: %p\n", mModules[i].mpModule);
+		continue;
 
-		(*m).load();
+		PokeyDebugReport("Loading module %s (%s)...", mModules[i].mpModule->getModuleName(), mModules[i].mpModule->getModuleVersion());
+
+		mModules[i].load();
 	}
 }
 
@@ -35,7 +41,7 @@ void ModuleLoader::unloadModules()
 {
 	int i = 0;
 	PokeyDebugReport("unloading modules..\n");
-	for (int i = 0; i < mModules.size(); i++)
+	for (int i = 0; i < mNum; i++)
 	{
 		ModuleAccessor* pM = &mModules[i];
 		PokeyDebugReport("Unloading module %s (%s)...", pM->mpModule->getModuleName(), pM->mpModule->getModuleVersion());
@@ -55,7 +61,7 @@ void ModuleLoader::tick()
 	// major hack lmao
 	LightCyclerTick();
 	return;
-	for (int i = 0; i < mModules.size(); ++i)
+	for (int i = 0; i < mNum; ++i)
 		if (mModules[i].isLoaded())
 	{
 		// DebugReport("%u, %s", i, mModules[i].mpModule->getModuleName());

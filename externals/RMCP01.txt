@@ -65,3 +65,5 @@ Panic__Q24nw4r2dbFPCciPCc=0x80025FB0
 Panic__Q24nw4r2dbFPCciPCce=0x80025FB0
 GetResMdl__Q34nw4r3g3d7ResFileCFPCc=0x8004C240
 __register_global_object=0x80021338
+__construct_array=0x80020FF4
+__destroy_arr=0x800210EC

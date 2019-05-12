@@ -3,6 +3,8 @@
 #include <libpokey/debug.h>
 #include <vector>
 
+#define NUM_PATCH_HISTORY 32
+
 class MemoryPatcher
 {
 public:
@@ -43,5 +45,6 @@ private:
 		{}
 	};
 
-	std::vector<PatchRecord> mPatchRecord;
+	PatchRecord mPatchRecord[NUM_PATCH_HISTORY];
+	int numPatches;
 };

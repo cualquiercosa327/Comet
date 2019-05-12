@@ -19,6 +19,12 @@
 
 namespace Prologue {
 
+namespace Modules
+{
+Reload::Reloader _Reloader;
+Logging::CometLogger _CometLogger;
+LightCycler _LightCycler;
+}
 
 // The first function will be the entry point.
 void prologue()
@@ -30,7 +36,7 @@ void prologue()
 	CometSystem::initSystem();
 
 	DebugReport("Handling patches!\n");
-	//CometSystem::getSystem()->processDiscPatches();
+	CometSystem::getSystem()->processDiscPatches();
 
 	// Start the memory watcher (ensure patches are not overwritten).
 	DebugReport("Starting memory watcher!\n");
@@ -38,11 +44,16 @@ void prologue()
 
 	DebugReport("Adding modules!\n");
 	{
-		CometSystem::getSystem()->mModuleLoader.appendNewModule<Reload::Reloader>();
+		ModuleLoader* pModuleLoader = &CometSystem::getSystem()->mModuleLoader;
+		
+		Modules::_Reloader = Reload::Reloader();
+		Modules::_CometLogger = Logging::CometLogger();
+		Modules::_LightCycler = LightCycler();
 
-		CometSystem::getSystem()->mModuleLoader.appendNewModule<Logging::CometLogger>();
+		pModuleLoader->appendModule(&Modules::_Reloader);
+		pModuleLoader->appendModule(&Modules::_CometLogger);
+		pModuleLoader->appendModule(&Modules::_LightCycler);
 
-		CometSystem::getSystem()->mModuleLoader.appendNewModule<LightCycler>();
 	}
 
 	DebugReport("Loading modules!\n");

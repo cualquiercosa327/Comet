@@ -81,7 +81,9 @@ void CycleLights()
 
 void LightCyclerTick()
 {
-	if (!(++tick % 4) )//|| cooldown--)
+	if (cooldown)
+		cooldown--;
+	if (!(++tick % 4) || cooldown)
 		return;
 
 	PADRead(Pads);

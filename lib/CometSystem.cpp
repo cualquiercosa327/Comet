@@ -41,7 +41,7 @@ CometSystem* CometSystem::initSystem()
 void CometSystem::processDiscPatches()
 {
 	// todo: keep track if loaded
-	// mMemoryPatcher.revertPatches();
+	mMemoryPatcher.revertPatches();
 	mMemoryPatcher.processDiscPatchFile();
 }
 namespace {
@@ -63,6 +63,6 @@ void CometSystem::setupMemoryWatcher()
 }
 void CometSystem::tick()
 {
-	if (--cCooldown) return;
+	// if (--cCooldown) return;
 	mModuleLoader.tick();
 }

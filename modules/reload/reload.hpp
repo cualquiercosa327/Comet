@@ -6,6 +6,7 @@ namespace Reload {
 
 class Reloader : public IModule
 {
+public:
 	~Reloader() override {}
 	eResult load() override { return RESULT_OK; }
 	eResult unload() override { return RESULT_OK; }

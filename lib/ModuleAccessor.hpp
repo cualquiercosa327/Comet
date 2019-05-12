@@ -9,6 +9,8 @@ public:
 	inline ModuleAccessor(IModule* pModule)
 		: mpModule(pModule), bLoaded(false)
 	{}
+	inline ModuleAccessor()
+	{}
 
 	inline ~ModuleAccessor()
 	{

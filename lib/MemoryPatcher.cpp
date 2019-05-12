@@ -57,7 +57,9 @@ void MemoryPatcher::processDiscPatchFile()
 	u32 fileLen = fileInfo.length;
 	u32 fileLen32 = OSRoundUp32B(fileLen);
 
-	DebugReport("Expecting %u patches\n", fileLen32);
+	DebugReport("Expecting %u bytes\n", fileLen32);
+
+	patch_block.resize(fileLen32);
 
 	u32 amountRead = DVDRead(&fileInfo, (void*)OSRoundUp32B(&patch_block[0]), fileLen32, 0);
 	DebugReport("Read %u bytes\n", amountRead);
@@ -67,8 +69,13 @@ void MemoryPatcher::processDiscPatchFile()
 			
 	DebugReport("Applying patch file..\n");
 
+
+	u32* pblock = (u32*)OSRoundUp32B((u32)&patch_block[0]);
+
+	DebugAssert(pblock);
+
 	// NULL terminated
-	processPatchFile((u32*)OSRoundUp32B((u32)&patch_block[0]));
+	processPatchFile(pblock);
 	DebugReport("Success!\n");
 }
 void MemoryPatcher::patch(MemoryPatcher::Patch32* block)

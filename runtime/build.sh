@@ -15,5 +15,4 @@ do
 done
 
 echo Linking...
-
-../../tool/Kamek.exe bootstrap.o loader.o -static=0x80218FF0 -output-gecko=loader.txt -externals="../externals/RMCP01.txt" -input-dol="../../tool/main.dol" -output-dol=comet.dol
+../../tool/Kamek.exe bootstrap.o loader.o -static=0x80218FF0 -direct -output-gecko=loader.txt -externals="../externals/RMCP01.txt" -input-dol="../../tool/main.dol" -output-dol=comet.dol

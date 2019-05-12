@@ -116,3 +116,7 @@ void destroyGlobals()
 		// ((void(*)(void*))it->dtor)(it->obj);
 	}
 }
+
+// Credit: zak
+// Allows concurrent save data
+PokeyWrite32(0x80544928, 0x7C601B78)

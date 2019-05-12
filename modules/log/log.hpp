@@ -2,6 +2,7 @@
 
 #include <Common/rk_types.h>
 #include <lib/IModule.hpp>
+#include <libpokey/debug.h>
 
 namespace Logging {
 

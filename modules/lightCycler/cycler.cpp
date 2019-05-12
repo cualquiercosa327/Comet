@@ -4,6 +4,7 @@
 #include <libpokey/debug.h>
 
 #include <revolution/pad.h>
+#include <revolution/kpad.h>
 
 #include <nw4r/g3d/res/g3d_resmdl_ac.h>
 #include <nw4r/g3d/res/g3d_resmat_ac.h>
@@ -67,7 +68,6 @@ void CycleLights()
 		if (ls == -1)
 			continue;
 
-
 		if (ls < 15)
 			ls++;
 		else
@@ -93,7 +93,15 @@ void LightCyclerTick()
 
 	if (!(++tick % 4))
 		return;
+
 	PADRead(Pads);
+
+	KPADStatus kStat;
+
+	KPADRead(0, &kStat, 1);
+
+	if (kStat.trig & KPAD_BUTTON_HOME)
+		CycleLights();
 
 	if (Pads[0].button & PAD_BUTTON_Y)
 		CycleLights();

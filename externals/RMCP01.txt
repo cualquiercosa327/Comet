@@ -11,7 +11,7 @@ __files=0x80270CF0
 fprintf=0x00000000 # hack
 abort=0x801A8858 # OSReturnToMenu
 PADRead=0x801AF44C
-
+KPADRead=0x80197380
 OSSetPeriodicAlarm=0x801A08E0
 OSGetTime=0x801AAD5C
 OSFatal=0x801A4EC4

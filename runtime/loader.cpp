@@ -5,8 +5,8 @@
 #include <libpokey/mkw/environment.h>
 
 // #define MARGIN_OF_ERROR 2048
-
-#define MARGIN_OF_ERROR 0
+// Also max reload can add
+#define MARGIN_OF_ERROR 256
 
 inline
 EGG::Heap* getMem1Heap()

@@ -39,9 +39,6 @@ void prologue()
 
 	__global_destructor_chain = 0;
 	
-	DebugReport("nBytesCtor: %u; b %p e %p\n", (u32)__ctor_loc - (u32)__ctor_end, __ctor_loc, __ctor_end);
-	
-
 	int q = 0;
 	for (void*** f = &__ctor_loc; f < &__ctor_end; f++)
 	{
@@ -112,6 +109,10 @@ extern "C" void __register_global_object(void* obj, void* dtor, chain* newchain)
 
 void destroyGlobals()
 {
-	for (chain* it = __global_destructor_chain; it; it = it->last)
-		((void(*)(void*))it->dtor)(it->obj);
+	for (chain* it = __global_destructor_chain; it && OSIsMEM1Region(it); it = it->last)
+	{
+		DebugReport("Destroying global %p\n", it->obj);
+		DebugReport("DT: %p\n", it->dtor);
+		// ((void(*)(void*))it->dtor)(it->obj);
+	}
 }

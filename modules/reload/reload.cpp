@@ -14,18 +14,24 @@
 #include <lib/CometSystem.hpp>
 
 namespace Reload {
+
+// We need this here, as the reload module cannot change for a reload to work
+void _rprologue()
+{
+	Prologue::prologue();
+}
+
 #ifdef DEBUG
 
 
-extern void reload()
+void reload()
 {
 	BOOL iState = OSDisableInterrupts();
 
 	DVDFileInfo fileInfo;
 	bool success = false;
-	u8* block = (u8*)0x809c4fa0;//getBlock();
-
-	PokeyVerboseReport("---\nRELOADING\n---\n");
+	
+	DebugReport("---\nRELOADING\n---\n");
 
 	//CometSystem::getSystem()->mModuleLoader.unloadModules();
 	destroyGlobals();
@@ -36,7 +42,7 @@ extern void reload()
 		PokeyDebugReport("File len: %u\n", fileLen);
 		u32 fileLen32 = OSRoundUp32B(fileLen);
 		PokeyDebugReport("File len (rounded): %u\n", fileLen32);
-		u32 amountRead = DVDRead(&fileInfo, block, fileLen32, 0);
+		u32 amountRead = DVDRead(&fileInfo, (void*)0x809c4fa0, fileLen32, 0);
 		DVDClose(&fileInfo);
 		if (fileLen <= amountRead)
 		{

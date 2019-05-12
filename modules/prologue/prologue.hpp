@@ -5,8 +5,7 @@
 
 namespace Prologue {
 
-//! @brief apply the patches
-void applyPatches(u32* block);
+void prologue();
 
 } // namespace Prologue
 

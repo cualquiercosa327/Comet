@@ -68,7 +68,7 @@ void CycleLights()
 			continue;
 
 
-		if (ls < 16)
+		if (ls < 15)
 			ls++;
 		else
 			ls = 0;

@@ -7,15 +7,13 @@ CometSystem CometSystem::sInstance;
 CometSystem* CometSystem::spInstance;
 #endif
 
-int cCooldown;
-
-#ifndef COMET_SYSTEM_BSS
 CometSystem::CometSystem()
-{}
+{
+	DebugReport("Initializing Comet System!\n");
+}
 
 CometSystem::~CometSystem()
 {}
-#endif
 
 CometSystem* CometSystem::initSystem()
 {
@@ -26,16 +24,13 @@ CometSystem* CometSystem::initSystem()
 		return spInstance;
 	}
 #endif
-	DebugReport("Initializing Comet System!\n");
 
 #ifdef COMET_SYSTEM_BSS
-	// sInstance = CometSystem();
-
-	cCooldown = 200;
 
 	return &sInstance;
 #else
-	return (spInstance = new ((EGG::Heap*)0x90127428) CometSystem());
+
+	return (spInstance = new () CometSystem());
 #endif
 }
 void CometSystem::processDiscPatches()
@@ -63,6 +58,5 @@ void CometSystem::setupMemoryWatcher()
 }
 void CometSystem::tick()
 {
-	// if (--cCooldown) return;
 	mModuleLoader.tick();
 }

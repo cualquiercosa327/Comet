@@ -7,7 +7,6 @@ ModuleLoader::ModuleLoader()
 {
 	PokeyVerboseReport("[ModuleLoader @%p] Constructed\n", this);
 	mNum = 0;
-	mCursor = 0;
 }
 ModuleLoader::~ModuleLoader()
 {
@@ -28,10 +27,14 @@ void ModuleLoader::loadModules()
 	PokeyDebugReport("Loading %u modules\n", mNum);
 	for (int i = 0; i < mNum; i++)
 	{
-		PokeyDebugReport("module: %p\n", mModules[i].mpModule);
-		continue;
+		IModule* pModule = mModules[i].mpModule;
+		PokeyDebugReport("module: %p\n", pModule);
+		
+		DebugAssert(pModule->getModuleName());
+		DebugAssert(pModule->getModuleVersion());
 
-		PokeyDebugReport("Loading module %s (%s)...", mModules[i].mpModule->getModuleName(), mModules[i].mpModule->getModuleVersion());
+
+		PokeyDebugReport("Loading module %s (%s)...", pModule->getModuleName(), pModule->getModuleVersion());
 
 		mModules[i].load();
 	}

@@ -17,7 +17,7 @@ namespace Reload {
 #ifdef DEBUG
 
 
-void reload()
+extern void reload()
 {
 	BOOL iState = OSDisableInterrupts();
 
@@ -28,6 +28,7 @@ void reload()
 	PokeyVerboseReport("---\nRELOADING\n---\n");
 
 	//CometSystem::getSystem()->mModuleLoader.unloadModules();
+	destroyGlobals();
 
 	if (DVDOpen(PATH_CODE_BIN, &fileInfo))
 	{

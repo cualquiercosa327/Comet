@@ -12,10 +12,8 @@
 class CometSystem
 {
 public:
-#ifndef COMET_SYSTEM_BSS
 	CometSystem();
 	~CometSystem();
-#endif
 
 	static CometSystem* initSystem();
 	static inline CometSystem* getSystem()

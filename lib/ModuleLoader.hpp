@@ -29,9 +29,10 @@ public:
 		DebugReport("Current number of modules: %u/%u\n", mNum+1, NUM_MODULE_SLOTS);
 		DebugReport("src: bLoaded: %u, ptr: %p\n", pM.bLoaded, pM.mpModule);
 		//mModules[++mCursor] = pM;
-		mModules[mCursor].bLoaded = pM.bLoaded;
-		mModules[mCursor].mpModule = pM.mpModule;
-		mCursor++;
+		mModules[mNum].bLoaded = pM.bLoaded;
+		mModules[mNum].mpModule = pM.mpModule;
+		DebugAssert(mModules[mNum].mpModule);
+		DebugAssert(mModules[mNum].mpModule->getModuleName());
 		mNum++;
 	}
 	// Unsafe, as we don't have a reserved heap, yet
@@ -49,7 +50,6 @@ public:
 		appendModuleAccessor(ModuleAccessor(new M()));
 	}
 private:
-	u16 mCursor;
 	u16 mNum;
 	ModuleAccessor mModules[NUM_MODULE_SLOTS];
 	

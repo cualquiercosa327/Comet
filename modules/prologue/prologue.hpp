@@ -2,18 +2,6 @@
 
 #include <Common/rk_types.h>
 
-// deprecated patch history
-#if 0
-//! @brief What was at the address before it was patched. internally array of 30 entries
-struct patchEntry
-{
-	void* addr;
-	u32 oldVal;
-};
-#define NUM_PATCH_HISTORY 30
-patchEntry* getPatchEntries();
-int getPatchCursor();
-#endif
 
 namespace Prologue {
 
@@ -21,3 +9,14 @@ namespace Prologue {
 void applyPatches(u32* block);
 
 } // namespace Prologue
+
+struct chain
+{
+	chain* last;
+	void* dtor;
+	void* obj;
+};
+
+__declspec(weak) void** __ctor_loc;
+__declspec(weak) void** __ctor_end;
+void destroyGlobals();

@@ -6,6 +6,7 @@
 #include <libpokey/debug.h>
 
 void LightCyclerTick();
+void NTSCU_Region_Suffix_Process();
 class LightCycler : public IModule
 {
 public:

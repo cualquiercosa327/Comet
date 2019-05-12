@@ -11,12 +11,10 @@ public:
 	~CometLogger() override {}
 	eResult load() override
 	{
-		spLogCtx = new LogContext();
 		return RESULT_OK;
 	}
 	eResult unload() override
 	{
-		delete spLogCtx;
 		return RESULT_OK;
 	}
 
@@ -34,7 +32,7 @@ public:
 		};
 		u32 mLogMask;
 	};
-	static LogContext* spLogCtx;
+	static LogContext sLogCtx;
 };
 
 

@@ -1,8 +1,5 @@
 {
     "sources": [
-        "IModule.cpp",
-        "ModuleAccessor.cpp",
-        "ModuleLoader.cpp",
         "MemoryPatcher.cpp",
         "CometSystem.cpp"
     ],

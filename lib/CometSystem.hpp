@@ -1,6 +1,5 @@
 #pragma once
 
-#include <lib/ModuleLoader.hpp>
 #include <lib/MemoryPatcher.hpp>
 
 
@@ -27,6 +26,7 @@ public:
 
 	void processDiscPatches();
 	void setupMemoryWatcher();
+	void memoryScan();
 
 	void tick();
 
@@ -38,8 +38,7 @@ private:
 	static CometSystem* spInstance;
 #endif
 
-public: // for now
-	ModuleLoader mModuleLoader;
+private:
 	MemoryPatcher mMemoryPatcher;
 
 	OSAlarm mMemoryWatcherAlarm;

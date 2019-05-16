@@ -1,28 +1,12 @@
 #pragma once
 
 #include <Common/rk_types.h>
-#include <lib/IModule.hpp>
-#include <libpokey/debug.h>
 
 namespace Logging {
 
-class CometLogger : public IModule
+class CometLogger
 {
 public:
-	~CometLogger() override {}
-	eResult load() override
-	{
-		return RESULT_OK;
-	}
-	eResult unload() override
-	{
-		return RESULT_OK;
-	}
-
-	const char* getModuleName() override { return "Comet Logger"; }
-	const char* getModuleVersion() override { return "1.0"; }
-	bool getIsCriticalModule() override { return false; }
-
 	struct LogContext
 	{
 		// TODO: DWC logging integration

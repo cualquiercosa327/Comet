@@ -3,11 +3,11 @@
 
 #include <libpokey/debug.h>
 #include <modules/prologue/prologue.hpp>
+#include <modules/prologue/globalsManager.hpp>
 
 #include <revolution/pad.h>
 #include <EGG/core/eggExpHeap.hpp>
 
-#include <lib/IModule.hpp>
 #include <libpokey/mkw/environment.h>
 #include <revolution/dvd.h>
 
@@ -26,15 +26,14 @@ void _rprologue()
 
 void reload()
 {
-	BOOL iState = OSDisableInterrupts();
+POKEY_BEGIN_NO_MULTITASK
 
 	DVDFileInfo fileInfo;
 	bool success = false;
 	
 	DebugReport("---\nRELOADING\n---\n");
 
-	//CometSystem::getSystem()->mModuleLoader.unloadModules();
-	destroyGlobals();
+	GlobalsManager::destroyGlobals();
 
 	if (DVDOpen(PATH_CODE_BIN, &fileInfo))
 	{
@@ -52,16 +51,13 @@ void reload()
 	}
 	if (!success)
 		PokeyDebugReport("Reload Failed!\n");
-	
-	
-	//PokeyDebugReport("Calling prologue: %p\n", block);
-
 
 	// Call the prologue, again. this will load patches
 	((u32(*)(void))0x809c4fa0)();
 
 	PokeyDebugReport("Reload Success!\n");
-	OSRestoreInterrupts(iState);
+
+POKEY_END_NO_MULTITASK
 }
 
 #if 1

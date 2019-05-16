@@ -1,4 +1,4 @@
 {
     "includes": [ ],
-    "sources": [ "prologue.cpp" ]
+    "sources": [ "globalsManager.cpp", "universalizer.cpp", "prologue.cpp" ]
 }

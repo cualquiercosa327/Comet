@@ -21,11 +21,14 @@ void MemoryPatcher::processPatchFile(u32* block)
 		mPatchRecord[numPatches].addr = pPatch->addr;
 		mPatchRecord[numPatches].val = *(u32*)pPatch->addr;
 		mPatchRecord[numPatches].newVal = pPatch->val;
+
+		DebugReport("\tPATCH: *%p = %p (was %p)\n", pPatch->addr, pPatch->val, *(u32*)pPatch->addr);
+
 		patch(pPatch);
 		numPatches++;
 
 	}
-	DebugReport("Made %u patches!\n", i);
+	DebugReport("..Made %u patches!\n", i);
 }
 void MemoryPatcher::revertPatches()
 {
@@ -48,7 +51,7 @@ void funcReqFail(const char* exp, const char* msg)
 } while (0);
 void MemoryPatcher::processDiscPatchFile()
 {
-	std::vector<u8> patch_block;
+	u8 patch_block[800];
 	DVDFileInfo fileInfo;
 	
 	FUNC_REQUIRES(DVDOpen(PATH_PATCH_BIN, &fileInfo), "Failed to open patch file!\n");
@@ -59,7 +62,7 @@ void MemoryPatcher::processDiscPatchFile()
 
 	DebugReport("Expecting %u bytes\n", fileLen32);
 
-	patch_block.resize(fileLen32);
+	// patch_block.resize(fileLen32);
 
 	u32 amountRead = DVDRead(&fileInfo, (void*)OSRoundUp32B(&patch_block[0]), fileLen32, 0);
 	DebugReport("Read %u bytes\n", amountRead);

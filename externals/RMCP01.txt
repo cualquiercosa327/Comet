@@ -13,6 +13,7 @@ abort=0x801A8858 # OSReturnToMenu
 PADRead=0x801AF44C
 KPADRead=0x80197380
 OSSetPeriodicAlarm=0x801A08E0
+OSCancelAlarm=0x801A0964
 OSGetTime=0x801AAD5C
 OSFatal=0x801A4EC4
 Fatal=0x801A4EC4
@@ -70,3 +71,6 @@ __destroy_arr=0x800210EC
 
 
 DVDConvertPathToEntrynum=0x8015DF4C
+
+
+__nwa__FUli=0x80229DFC

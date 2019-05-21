@@ -1,5 +1,16 @@
 {
-    "modules": [ "reload", "prologue", "overlay", "log", "lightCycler", "_ckpt", "Wiimmfi" ],
+    "modules": [
+        "reload",
+        "prologue",
+
+        "log",
+        "wiimmfi",
+        "lightCycler",
+        "overlay"
+    ],
+    "private_modules": [
+        "_ckpt"
+    ],
     "includes": [
         "$EABI_ROOT",
         "$MSL_ROOT",

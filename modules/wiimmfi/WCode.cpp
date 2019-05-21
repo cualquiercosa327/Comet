@@ -1,96 +1,101 @@
+#define WCODE_CPP_INCLUDED_FROM_SOURCE
 #include "WCode.hpp"
 
 #include <libpokey/debug.h>
 #include <libpokey/hooks.h>
 
-#include <string.h>
-#include <revolution/os.h>
-
-
-static const char patcherInfo[] = "Comet 1.0                                 \n";
 
 
 namespace Wiimmfi {
 
-static const char*   WiimmfiDomainString	= "wiimmfi.de";
-static const int	 WiimmfiDomainLength	= 10;
+// Types
 
-//! PatchDomain and PatchWiimmfi are based on domainpatcher and PrivateServerPatcher from https://sourceforge.net/p/usbloadergx/code/HEAD/tree/trunk/source/patches/gamepatches.c
-//! Key differences:
-//! - Deobfuscated and fully documented
-//! - Syntax and naming updated to Comet standards
-//! - Sanity checking and code optimization
-static struct WiimmfiManager
-{
-	
-	//! @brief TODO
-	static void PatchDomain(void* addr, u32 len)
-	{
-		char* cur = (char*)addr;
-		const char* end = cur + len - 16;
 
-		do if (!memcmp(cur, "nintendowifi.net", 16))
-		{
-			DebugReport("\tPatching \"nintendowifi.net\" instance @ %p\n", cur);
-			int len = strlen(cur);
-			u8 i;
-			memcpy(cur, WiimmfiDomainString, WiimmfiDomainLength);
-			memmove(cur + WiimmfiDomainLength, cur + 16, len - 16);
-			for (i = 16 - WiimmfiDomainLength; i > 0; i--)
-				cur[len - i] = 0;
-			cur += len;
-		}
-		while (++cur < end);
-	}
-	//! @brief TODO
-	static void PatchWiimmfi(void* addr, u32 len)
-	{
-		// Patch protocol https -> http
-		char *cur = (char *)addr;
-		const char *end = cur + len - 8;
-		
-		do if (!memcmp(cur, "https://", 8) && cur[8])
-		{
-			int len = strlen(cur);
-			memmove(cur + 4, cur + 5, len - 5);
-			cur[len - 1] = 0;
-			cur += len;	
-		} while (++cur < end);
+//! @brief The payload called by the loader code.
+//!
+//! @param[in] pBlock  Pointer to the start of the payload. (unaligned)
+//! @param[in] p4Block [Unused] Pointer to the start of the payload block 4B aligned (+2 pBlock)
+//! @param[in] pProl   Pointer to the prologue (this function)
+//!
+typedef void(*WC_Prologue)(void* pBlock, void* p4Block, void* pProl);
 
-		// Patch nintendowifi.net -> private server domain
-		PatchDomain(addr, len);
-	}
-
-	WiimmfiManager()
-	{
-		// Write patcher info
-		strcpy((char*)0x80276054, patcherInfo);
-		// Based on https://sourceforge.net/p/usbloadergx/code/1271/
-		strcpy((char*)0x8027A400, "http://ca.nas.wiimmfi.de/ca");
-		strcpy((char*)0x8027A400 + 0x28, "http://naswii.wiimmfi.de/ac");
-		strcpy((char*)0x8027A400 + 0x4C, "https://main.nas.wiimmfi.de/pp");
-
-		DebugReport("Searching for strings to patch..\n");
-		u32 clock = OSGetTick();
-		// Do the plain old patching with the string search
-		PatchWiimmfi((void*)0x80004000, 0x385200);
-		clock = OSGetTick() - clock;
-		DebugReport("..Done. (%ums)\n", OSTicksToMilliseconds(clock));
-	}
-
-} sWiimmfiManager;
-
+// Standalone patches
 
 // Nop "Host" header
 PokeyWrite32(0x800ed868, 0x60000000);
 
-// 's://' -- todo: understand
+// 's://' -- todo: don't think needed still
 PokeyWrite32(0x802a146cl, 0x733a2f2f);
 
 
 // Force dev server when DWC initializes
 PokeyWrite32(0x800ECAAC, 0x3BC00000);
 
+
+// Complex patches
+
+#ifdef COMET_WCODE_REIMPLEMENTATION
+
+void WCode_LoadPayload(int a, void* payload)
+{
+	DebugReport("WCode_LoadPayload was called(%i, %p)!\n", a, payload);
+
+	if (a <= 0)
+	{
+		DebugReport("> Early exit\n");
+		return;
+	}
+	
+	if (DWC::sAuthServer != DWC::AuthSvr::PROHIBITED)
+	{
+		DebugReport("> Getting things ready for next time..\n");
+		// Store payload
+		SSL::l_initialized = (int)payload;
+		// Mark as ready next time
+		DWC::sAuthServer = DWC::AuthSvr::PROHIBITED;
+	}
+	else
+	{	
+		// Round up our payload (+2)
+		void* payloadRounded = (void*)RoundUpTo(payload, 4); // r4
+			
+		// Derive our prologue pointer
+		WC_Prologue prologue = (WC_Prologue)((u8*)payloadRounded + *(u8*)payloadRounded); // r5
+			
+		// Clear data cache
+		dcbf(prologue);
+
+		int alignTrans; // Debug only
+
+		DebugReport("Launching WC Payload.\n\tUnaligned block pointer: %p\n\tAligned (4B) block pointer: %p (%c%u)\n\tPrologue offset: %u\n\tPrologue pointer: %p\n",
+			payload,
+			( alignTrans = (int)payloadRounded-(int)payload ) >= 0 ? '+' : '-' , // Explicit sign
+			abs(alignTrans),
+			*(u8*)payloadRounded,
+			prologue
+		);
+
+		// Call our prologue
+		prologue(payload, payloadRounded, prologue);
+
+		DebugReport("..Wiimmfi code changes injected!\n");
+	}
+	
+
+}
+
+PokeyCallDefAsm(0x800EE3A0)
+{
+	lwz r4, 12(r1);
+	bl WCode_LoadPayload;
+	// setup cr0
+	li r3, -1;
+	cmpwi r3, 0;
+	// blr;
+}
+#else
+
+// Reverse engineered version for reference
 PokeyInsertDefAsm(0x800EE3A0)
 {
 	cmpwi r3, 0;
@@ -117,7 +122,7 @@ call_payload:
 	// Load prologue offset
 	lbz r5, 0(r4);
 	add r5, r4, r5;
-	// Clear prologue cache block (32B)
+	// Clear prologue cache block
 	dcbf r0, r5;
 	// Call prologue
 	mtlr r5;
@@ -129,6 +134,9 @@ exit:
 	cmpwi r3, 0;
 	blr; // patched
 }
+#endif
+
+
 static u32 precomp_hash[] = {
 0, // pad (branch instruction, necessary for lwzu r5, 4(r3) to load first value
 0x0FFF1F07, 0x00E638C9, 0x49FBEFFA, 0x79022D3A, 0x84AB134F

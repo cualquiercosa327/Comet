@@ -37,7 +37,7 @@ POKEY_END_NO_MULTITASK }
 
 inline void tickThreadSafe() { POKEY_BEGIN_NO_MULTITASK
 	
-	LightCyclerTick();
+	// LightCyclerTick();
 	// CometSystem::getSystem()->tick();
 
 POKEY_END_NO_MULTITASK }

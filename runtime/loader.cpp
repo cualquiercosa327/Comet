@@ -71,6 +71,14 @@ kmCallDefCpp(0x80007B5C, bool, System::ModuleLinker* linker, int moduleID)
 		DebugReport("Block successfully allocated at expected location!\n");
 		DVDReadPrio(&fileInfo, block, fileLenRounded, 0, 2);
 		DVDClose(&fileInfo);
+
+		if(*(u32*)block == 'YAZ0')
+		{
+			DebugReport("Custom loader not set.\n");
+			pHeap->free(block);
+
+			goto out;
+		}
 		((u32(*)(void))block)();
 	}
 	
@@ -81,3 +89,10 @@ out:
 	// Call down to the original module
 	return linker->callModule(moduleID);
 }
+
+
+// Do not allow user to skip bootstrap scene (heap bug workaround)
+PokeyWrite32(0x80007BA4, 0x38600000);
+
+// Only require fourth time to advance
+PokeyWrite32(0x80386FA8, 0x437A0000); //250.0f);

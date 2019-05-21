@@ -1,5 +1,0 @@
-{
-    "includes": [ ],
-    "comment": "No additional includes needed here.",
-    "sources": [ "demo.cpp" ]
-}

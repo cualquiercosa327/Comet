@@ -1,5 +1,5 @@
 {
-    "modules": [ "reload", "prologue", "demo", "log", "lightCycler" ],
+    "modules": [ "reload", "prologue", "overlay", "log", "lightCycler", "_ckpt", "Wiimmfi" ],
     "includes": [
         "$EABI_ROOT",
         "$MSL_ROOT",

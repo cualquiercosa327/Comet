@@ -1,7 +1,7 @@
 #pragma once
 
+#include <Common/rk_types.h>
 #include <libpokey/debug.h>
-#include <vector>
 
 #define NUM_PATCH_HISTORY 32
 

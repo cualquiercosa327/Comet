@@ -1,7 +1,8 @@
 {
     "sources": [
         "MemoryPatcher.cpp",
-        "CometSystem.cpp"
+        "CometSystem.cpp",
+        "GlobalsManager.cpp"
     ],
     "objects": []
 }

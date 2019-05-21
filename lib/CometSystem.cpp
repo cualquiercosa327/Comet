@@ -6,9 +6,9 @@ CometSystem CometSystem::sInstance;
 #else
 CometSystem* CometSystem::spInstance;
 #endif
-
+namespace {
 bool isWatching = false;
-
+}
 CometSystem::CometSystem()
 {
 	DebugReport("Initializing Comet System!\n");
@@ -17,7 +17,10 @@ CometSystem::CometSystem()
 CometSystem::~CometSystem()
 {
 	if (isWatching)
+	{
+		DebugReport("Canceling memory watcher..\n");
 		OSCancelAlarm(&mMemoryWatcherAlarm);
+	}
 }
 
 CometSystem* CometSystem::initSystem()

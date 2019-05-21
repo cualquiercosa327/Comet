@@ -59,6 +59,11 @@ __mod2i=0x8002190C
 __shl2i=0x80021A18
 __shr2u=0x80021A3C
 
+strcpy=0x80013120
+OSGetTick=0x801AAD74
+memcmp=0x8000F314
+strlen=0x80021254
+memmove=0x8000F1F0
 
 GetResMat__Q34nw4r3g3d6ResMdlCFUl=0x8004E9F0
 GetResMatNumEntries__Q34nw4r3g3d6ResMdlCFv=0x8004EA50
@@ -72,5 +77,11 @@ __destroy_arr=0x800210EC
 
 DVDConvertPathToEntrynum=0x8015DF4C
 
-
 __nwa__FUli=0x80229DFC
+
+GetMtx__Q34nw4r3g3d6ScnObjCFQ44nw4r3g3d6ScnObj13ScnObjMtxTypePQ34nw4r4math5MTX34=0x8006DC80
+GXLoadPosMtxImm=0x8017310C
+
+
+PlayPolicy_Loop__Q24nw4r3g3dFfff=0x00000000
+PlayPolicy_Onetime__Q24nw4r3g3dFfff=0x00000000

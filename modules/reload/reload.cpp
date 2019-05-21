@@ -3,7 +3,7 @@
 
 #include <libpokey/debug.h>
 #include <modules/prologue/prologue.hpp>
-#include <modules/prologue/globalsManager.hpp>
+#include <lib/GlobalsManager.hpp>
 
 #include <revolution/pad.h>
 #include <EGG/core/eggExpHeap.hpp>
